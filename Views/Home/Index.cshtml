@@ -1,0 +1,118 @@
+﻿@model EventEase.Models.HomeViewModel
+
+@{
+    ViewData["Title"] = "Home";
+}
+
+<section class="hero-section">
+    <div class="hero-content">
+        <h1 class="hero-title">Welcome to EventEase</h1>
+        <p class="hero-subtitle">Your gateway to amazing events.</p>
+        <a asp-controller="Events" asp-action="Index" class="btn btn-pink px-4 py-2">Explore Events</a>
+    </div>
+</section>
+
+<div class="row g-4 feature-row mb-4">
+    <div class="col-md-4">
+        <a asp-controller="Venues" asp-action="Index" class="text-decoration-none">
+            <div class="feature-card feature-pink">
+                <h5><i class="bi bi-geo-alt-fill me-2"></i>Find Venues</h5>
+                <p>Find and manage event venues quickly and easily.</p>
+            </div>
+        </a>
+    </div>
+    <div class="col-md-4">
+        <a asp-controller="Events" asp-action="Index" class="text-decoration-none">
+            <div class="feature-card feature-purple">
+                <h5><i class="bi bi-calendar-event-fill me-2"></i>Manage Events</h5>
+                <p>Plan, organize and maintain your event information.</p>
+            </div>
+        </a>
+    </div>
+    <div class="col-md-4">
+        <a asp-controller="Bookings" asp-action="Index" class="text-decoration-none">
+            <div class="feature-card feature-green">
+                <h5><i class="bi bi-journal-check me-2"></i>Track Bookings</h5>
+                <p>Track and manage customer bookings in one place.</p>
+            </div>
+        </a>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-8">
+        <h3 class="section-title">Upcoming Events</h3>
+
+        @if (Model.UpcomingEvents != null && Model.UpcomingEvents.Any())
+        {
+            @foreach (var item in Model.UpcomingEvents)
+            {
+                var eventImage = !string.IsNullOrEmpty(item.ImageUrl)
+                    ? item.ImageUrl
+                    : "https://images.unsplash.com/photo-1511578314322-379afb476865?auto=format&fit=crop&w=1200&q=80";
+
+                <a asp-controller="Events" asp-action="Details" asp-route-id="@item.EventId" class="text-decoration-none">
+                    <div class="event-card mb-4" style="background:
+                        linear-gradient(rgba(39, 11, 82, 0.28), rgba(39, 11, 82, 0.28)),
+                        url('@eventImage');
+                        background-size: cover;
+                        background-position: center;">
+                        <div class="event-card-body">
+                            <h4>@item.EventName</h4>
+                            <p>
+                                <i class="bi bi-calendar-event-fill home-icon"></i>
+                                @item.EventDate.ToString("MMMM dd, yyyy • hh:mm tt")
+                            </p>
+                            <p>
+                                <i class="bi bi-geo-alt-fill home-icon"></i>
+                                @item.Venue?.VenueName
+                            </p>
+                        </div>
+                    </div>
+                </a>
+            }
+        }
+        else
+        {
+            <div class="card card-custom p-4">
+                <p class="mb-0">No upcoming events available yet.</p>
+            </div>
+        }
+    </div>
+
+    <div class="col-lg-4">
+        <h3 class="section-title">Your Bookings</h3>
+
+        <div class="booking-panel">
+            @if (Model.RecentBookings != null && Model.RecentBookings.Any())
+            {
+                @foreach (var booking in Model.RecentBookings)
+                {
+                    <div class="booking-item">
+                        <div class="booking-date">
+                            <i class="bi bi-calendar-check-fill booking-icon"></i>
+                            @booking.BookingDate.ToString("M/d/yyyy")
+                        </div>
+                        <div class="booking-name">
+                            <i class="bi bi-ticket-perforated-fill booking-icon"></i>
+                            @booking.Event?.EventName
+                        </div>
+                        <div class="booking-venue">
+                            <i class="bi bi-geo-alt-fill booking-icon"></i>
+                            @booking.Venue?.VenueName
+                        </div>
+                        <div class="booking-links">
+                            <a asp-controller="Bookings" asp-action="Edit" asp-route-id="@booking.BookingId">Edit</a>
+                            <a asp-controller="Bookings" asp-action="Details" asp-route-id="@booking.BookingId">Details</a>
+                            <a asp-controller="Bookings" asp-action="Delete" asp-route-id="@booking.BookingId" class="text-danger">Delete</a>
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <p class="mb-0">No bookings available yet.</p>
+            }
+        </div>
+    </div>
+</div>

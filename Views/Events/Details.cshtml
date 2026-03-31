@@ -1,0 +1,37 @@
+﻿@model EventEase.Models.Event
+
+@{
+    ViewData["Title"] = "Event Details";
+}
+
+<div class="card card-custom p-4">
+    <h2 class="page-title">Event Details</h2>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-3">Event Name</dt>
+        <dd class="col-sm-9">@Model.EventName</dd>
+
+        <dt class="col-sm-3">Event Date</dt>
+        <dd class="col-sm-9">@Model.EventDate.ToShortDateString()</dd>
+
+        <dt class="col-sm-3">Event Type</dt>
+        <dd class="col-sm-9">@Model.EventType</dd>
+
+        <dt class="col-sm-3">Description</dt>
+        <dd class="col-sm-9">@Model.Description</dd>
+
+        <dt class="col-sm-3">Venue</dt>
+        <dd class="col-sm-9">@Model.Venue?.VenueName</dd>
+
+        <dt class="col-sm-3">Image</dt>
+        <dd class="col-sm-9">
+            @if (!string.IsNullOrEmpty(Model.ImageUrl))
+            {
+                <img src="@Model.ImageUrl" alt="Event Image" style="max-width:300px; border-radius:10px;" />
+            }
+        </dd>
+    </dl>
+
+    <a asp-action="Edit" asp-route-id="@Model.EventId" class="btn btn-primary btn-custom">Edit</a>
+    <a asp-action="Index" class="btn btn-secondary btn-custom">Back to List</a>
+</div>
