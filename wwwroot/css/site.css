@@ -517,13 +517,13 @@ textarea.form-control {
     }
 
 
-    /* ===== FIX HEADER (FULL WIDTH) ===== */
+   
     body {
         margin: 0;
         padding-top: 0;
     }
 
-    /* 🔥 PREMIUM FOOTER */
+   
     .custom-footer {
         width: 100%;
         margin-top: 50px;
@@ -543,7 +543,7 @@ textarea.form-control {
         flex-wrap: wrap;
     }
 
-    /* LEFT SIDE */
+   
     .footer-left {
         color: rgba(255, 255, 255, 0.9);
         font-size: 0.95rem;
@@ -560,7 +560,6 @@ textarea.form-control {
                 text-decoration: underline;
             }
 
-    /* RIGHT SIDE */
     .footer-right {
         color: #ffffff;
         font-size: 0.95rem;
@@ -579,7 +578,7 @@ textarea.form-control {
             font-weight: 700;
         }
 
-    /* 📱 MOBILE */
+  
     @media (max-width: 768px) {
         .custom-footer-content {
             flex-direction: column;
