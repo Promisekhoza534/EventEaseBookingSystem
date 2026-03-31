@@ -8,6 +8,60 @@ body {
 }
 
 
+.privacy-page {
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.privacy-hero {
+    background: linear-gradient(90deg, #21114f 0%, #3b1d86 50%, #5b1ea9 100%);
+    color: #fff;
+    border-radius: 22px;
+    padding: 40px 32px;
+    margin-bottom: 28px;
+    box-shadow: 0 12px 28px rgba(57, 24, 111, 0.25);
+}
+
+.privacy-title {
+    font-size: 2.4rem;
+    font-weight: 800;
+    margin-bottom: 12px;
+}
+
+.privacy-subtitle {
+    font-size: 1.05rem;
+    margin-bottom: 0;
+    opacity: 0.95;
+}
+
+.privacy-card {
+    background: #ffffff;
+    border-radius: 18px;
+    padding: 24px;
+    margin-bottom: 18px;
+    box-shadow: 0 10px 24px rgba(38, 24, 74, 0.08);
+    border-left: 6px solid #6f46e8;
+}
+
+    .privacy-card h3 {
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: #241d3a;
+        margin-bottom: 12px;
+    }
+
+    .privacy-card p {
+        color: #55506a;
+        line-height: 1.7;
+        margin-bottom: 0;
+    }
+
+    .privacy-card i,
+    .privacy-title i {
+        color: #ff7ab8;
+    }
+
+
 .home-icon {
     margin-right: 8px;
     color: #ffffff;
@@ -517,13 +571,12 @@ textarea.form-control {
     }
 
 
-   
     body {
         margin: 0;
         padding-top: 0;
     }
 
-   
+  
     .custom-footer {
         width: 100%;
         margin-top: 50px;
@@ -543,7 +596,7 @@ textarea.form-control {
         flex-wrap: wrap;
     }
 
-   
+  
     .footer-left {
         color: rgba(255, 255, 255, 0.9);
         font-size: 0.95rem;
@@ -560,6 +613,7 @@ textarea.form-control {
                 text-decoration: underline;
             }
 
+  
     .footer-right {
         color: #ffffff;
         font-size: 0.95rem;
@@ -578,7 +632,7 @@ textarea.form-control {
             font-weight: 700;
         }
 
-  
+   
     @media (max-width: 768px) {
         .custom-footer-content {
             flex-direction: column;
