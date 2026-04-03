@@ -39,23 +39,23 @@ Microsoft Azure App Service
 The system includes the following main tables:
 
 Venue -
-VenueId
-VenueName
-Location
-Capacity
+VenueId,
+VenueName,
+Location,
+Capacity,
 ImageUrl
 
 Event -
-EventId
-EventName
-EventDate
-Description
+EventId,
+EventName,
+EventDate,
+Description,
 VenueId
 
 Booking -
-BookingId
-EventId
-VenueId
+BookingId,
+EventId,
+VenueId,
 BookingDate
 
 🌐 Live Demo
