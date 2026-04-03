@@ -5,11 +5,17 @@ EventEase is a modern web application built with ASP.NET Core MVC that allows us
 🚀 Features
 
 🎟️ Manage Events (Create, Edit, Delete, View)
+
 🏢 Manage Venues with capacity tracking
+
 📅 Booking system with event & venue linking
+
 🖼️ Image support for events and venues
+
 📊 Display upcoming events
+
 📌 Booking tracking dashboard
+
 🔒 Privacy page included
 ☁️ Deployed on Microsoft Azure
 🛠️ Technologies Used
