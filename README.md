@@ -1,8 +1,9 @@
-📌 EventEase – Event Booking System
+EventEase – Event Booking System
 
 EventEase is a modern web application built with ASP.NET Core MVC that allows users to manage venues, events, and bookings efficiently. The system is designed to provide a clean interface for organizing events and tracking reservations.
 
 🚀 Features
+
 🎟️ Manage Events (Create, Edit, Delete, View)
 🏢 Manage Venues with capacity tracking
 📅 Booking system with event & venue linking
