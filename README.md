@@ -1,0 +1,1 @@
+A full-stack ASP.NET Core web application for streamlined event booking and management. It features venue discovery, event scheduling, booking workflows, and CRUD functionality with a responsive UI. Built with Entity Framework Core and SQL Server, the system demonstrates clean schema design, unique seeded data
