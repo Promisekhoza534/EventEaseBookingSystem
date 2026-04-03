@@ -17,6 +17,7 @@ EventEase is a modern web application built with ASP.NET Core MVC that allows us
 📌 Booking tracking dashboard
 
 🔒 Privacy page included
+
 ☁️ Deployed on Microsoft Azure
 🛠️ Technologies Used
 ASP.NET Core MVC
@@ -46,27 +47,39 @@ BookingId
 EventId
 VenueId
 BookingDate
+
 🌐 Live Demo
 
 👉 (https://eventease-app-promisekarabo-bahkhmcpamdqfxbe.southafricanorth-01.azurewebsites.net/)
 
 ⚙️ How to Run Locally
+
 Clone the repository
+
 git clone https://github.com/yourusername/EventEaseBookingSystem.git
+
 Open in Visual Studio
+
 Update appsettings.json connection string
+
 Run migrations:
+
 Update-Database
+
 Press F5 to run the app
+
 ☁️ Deployment
 
 The application is deployed using:
 
 Azure Web App Service
+
 Azure SQL Database
+
 👨‍💻 Author
 
 Promise Khoza
+
 Developed as part of a web development project.
 
 📄 License
