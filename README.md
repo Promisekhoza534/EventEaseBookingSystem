@@ -19,33 +19,57 @@ EventEase is a modern web application built with ASP.NET Core MVC that allows us
 🔒 Privacy page included
 
 ☁️ Deployed on Microsoft Azure
+
 🛠️ Technologies Used
+
 ASP.NET Core MVC
+
 Entity Framework Core
+
 SQL Server / Azure SQL Database
+
 Bootstrap 5
+
 HTML, CSS, JavaScript
+
 Microsoft Azure App Service
+
 🗄️ Database Structure
 
 The system includes the following main tables:
 
 Venue
+
 VenueId
+
 VenueName
+
 Location
+
 Capacity
+
 ImageUrl
+
 Event
+
 EventId
+
 EventName
+
 EventDate
+
 Description
+
 VenueId
+
 Booking
+
 BookingId
+
 EventId
+
 VenueId
+
 BookingDate
 
 🌐 Live Demo
@@ -56,7 +80,7 @@ BookingDate
 
 Clone the repository
 
-git clone https://github.com/yourusername/EventEaseBookingSystem.git
+git clone https://github.com/yourusername/EventEase-Booking-System.git
 
 Open in Visual Studio
 
@@ -78,7 +102,7 @@ Azure SQL Database
 
 👨‍💻 Author
 
-Promise Khoza
+Promise karabo Khoza
 
 Developed as part of a web development project.
 
