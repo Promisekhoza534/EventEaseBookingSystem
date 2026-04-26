@@ -18,7 +18,7 @@ namespace EventEase.Controllers
             _blobService = blobService;
         }
 
-        // GET: Events
+     
         public async Task<IActionResult> Index(string searchString)
         {
             var events = _context.Events
@@ -36,7 +36,7 @@ namespace EventEase.Controllers
             return View(await events.ToListAsync());
         }
 
-        // GET: Events/Details/5
+      
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -56,14 +56,14 @@ namespace EventEase.Controllers
             return View(eventItem);
         }
 
-        // GET: Events/Create
+   
         public IActionResult Create()
         {
             ViewData["VenueId"] = new SelectList(_context.Venues, "VenueId", "VenueName");
             return View();
         }
 
-        // POST: Events/Create
+       
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Event @event)
@@ -88,7 +88,7 @@ namespace EventEase.Controllers
             return View(@event);
         }
 
-        // GET: Events/Edit/5
+   
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -106,7 +106,7 @@ namespace EventEase.Controllers
             return View(eventItem);
         }
 
-        // POST: Events/Edit/5
+   
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, Event @event)
@@ -163,7 +163,7 @@ namespace EventEase.Controllers
             return View(@event);
         }
 
-        // GET: Events/Delete/5
+       
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -183,7 +183,7 @@ namespace EventEase.Controllers
             return View(eventItem);
         }
 
-        // POST: Events/Delete/5
+      
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
