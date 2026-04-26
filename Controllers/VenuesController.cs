@@ -23,7 +23,7 @@ namespace EventEase.Controllers
             _blobService = blobService;
         }
 
-        // GET: Venues
+        
         public async Task<IActionResult> Index(string searchString)
         {
             var venues = from v in _context.Venues
@@ -39,7 +39,7 @@ namespace EventEase.Controllers
             return View(await venues.ToListAsync());
         }
 
-        // GET: Venues/Details/5
+ 
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -57,15 +57,13 @@ namespace EventEase.Controllers
             return View(venue);
         }
 
-        // GET: Venues/Create
+   
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Venues/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+      
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Venue venue)
@@ -89,7 +87,6 @@ namespace EventEase.Controllers
             return View(venue);
         }
 
-        // GET: Venues/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -105,9 +102,7 @@ namespace EventEase.Controllers
             return View(venue);
         }
 
-        // POST: Venues/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+       
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, Venue venue)
@@ -162,7 +157,7 @@ namespace EventEase.Controllers
             return View(venue);
         }
 
-        // GET: Venues/Delete/5
+       
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -180,7 +175,7 @@ namespace EventEase.Controllers
             return View(venue);
         }
 
-        // POST: Venues/Delete/5
+      
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
