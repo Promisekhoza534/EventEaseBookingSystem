@@ -1,10 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using EventEase.Models;
 
 namespace EventEase.Data
 {
     public class ApplicationDbContext : DbContext
     {
+
+
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
@@ -13,6 +15,10 @@ namespace EventEase.Data
         public DbSet<Venue> Venues { get; set; }
         public DbSet<Event> Events { get; set; }
         public DbSet<Booking> Bookings { get; set; }
+
+        public DbSet<BookingDetailsViewModel> BookingDetailsView { get; set; }
+
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -35,6 +41,13 @@ namespace EventEase.Data
                 .WithMany(v => v.Bookings)
                 .HasForeignKey(b => b.VenueId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<BookingDetailsViewModel>()
+                .HasNoKey()
+                .ToView("BookingDetailsView");
         }
     }
+
+
+    
 }
