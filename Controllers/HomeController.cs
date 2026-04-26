@@ -34,5 +34,10 @@ namespace EventEase.Controllers
 
             return View(model);
         }
+
+        public IActionResult Privacy()
+        {
+            return View();
+        }
     }
 }
