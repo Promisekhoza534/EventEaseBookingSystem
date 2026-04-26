@@ -66,7 +66,7 @@ BookingDate
 
 Clone the repository
 
-git clone https://github.com/yourusername/EventEase-Booking-System.git
+git clone https://github.com/Promisekhoza534/EventEaseBookingSystem.git
 
 Open in Visual Studio
 
