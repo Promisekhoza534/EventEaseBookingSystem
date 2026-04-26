@@ -1,8 +1,24 @@
-﻿@model IEnumerable<EventEase.Models.Booking>
+@model IEnumerable<EventEase.Models.Booking>
 
 @{
     ViewData["Title"] = "Bookings";
 }
+
+<a asp-action="BookingView" class="btn btn-info mb-3">
+    View Booking Details
+</a>
+
+<form asp-action="Index" method="get" class="mb-4">
+    <div class="row g-2">
+        <div class="col-md-8">
+            <input type="text" name="searchString" class="form-control" placeholder="Search bookings by customer, contact, event, description, or venue..." />
+        </div>
+        <div class="col-md-4">
+            <button type="submit" class="btn btn-primary">Search</button>
+            <a asp-action="Index" class="btn btn-secondary">Clear</a>
+        </div>
+    </div>
+</form>
 
 <div class="events-page-header">
     <h1 class="events-page-title">All Bookings</h1>
