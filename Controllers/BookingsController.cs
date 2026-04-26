@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -19,14 +19,42 @@ namespace EventEase.Controllers
             _context = context;
         }
 
-        // GET: Bookings
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> BookingView(string searchString)
         {
-            var applicationDbContext = _context.Bookings.Include(b => b.Event).Include(b => b.Venue);
-            return View(await applicationDbContext.ToListAsync());
+            var bookings = _context.BookingDetailsView.AsQueryable();
+
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                bookings = bookings.Where(b =>
+                    b.BookingId.ToString().Contains(searchString) ||
+                    (b.EventName != null && b.EventName.Contains(searchString)));
+            }
+
+            return View(await bookings.ToListAsync());
         }
 
-        // GET: Bookings/Details/5
+        
+        public async Task<IActionResult> Index(string searchString)
+        {
+            var bookings = _context.Bookings
+                .Include(b => b.Event)
+                .Include(b => b.Venue)
+                .AsQueryable();
+
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                bookings = bookings.Where(b =>
+                    (b.CustomerName != null && b.CustomerName.Contains(searchString)) ||
+                    (b.CustomerContact != null && b.CustomerContact.Contains(searchString)) ||
+                    (b.Event != null && b.Event.EventName != null && b.Event.EventName.Contains(searchString)) ||
+                    (b.Event != null && b.Event.Description != null && b.Event.Description.Contains(searchString)) ||
+                    (b.Venue != null && b.Venue.VenueName != null && b.Venue.VenueName.Contains(searchString)));
+            }
+
+            return View(await bookings.ToListAsync());
+        }
+
+     
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -46,7 +74,7 @@ namespace EventEase.Controllers
             return View(booking);
         }
 
-        // GET: Bookings/Create
+      
         public IActionResult Create()
         {
             ViewData["EventId"] = new SelectList(_context.Events, "EventId", "EventName");
@@ -54,25 +82,34 @@ namespace EventEase.Controllers
             return View();
         }
 
-        // POST: Bookings/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+       
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("BookingId,BookingDate,CustomerName,CustomerContact,EventId,VenueId")] Booking booking)
+        public async Task<IActionResult> Create(Booking booking)
         {
+            bool exists = await _context.Bookings
+                .AnyAsync(b => b.VenueId == booking.VenueId
+                            && b.BookingDate.Date == booking.BookingDate.Date);
+
+            if (exists)
+            {
+                ModelState.AddModelError("", "This venue is already booked for the selected date.");
+            }
+
             if (ModelState.IsValid)
             {
                 _context.Add(booking);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+
             ViewData["EventId"] = new SelectList(_context.Events, "EventId", "EventName", booking.EventId);
             ViewData["VenueId"] = new SelectList(_context.Venues, "VenueId", "VenueName", booking.VenueId);
+
             return View(booking);
         }
 
-        // GET: Bookings/Edit/5
+     
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -90,9 +127,7 @@ namespace EventEase.Controllers
             return View(booking);
         }
 
-        // POST: Bookings/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+       
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("BookingId,BookingDate,CustomerName,CustomerContact,EventId,VenueId")] Booking booking)
@@ -127,7 +162,7 @@ namespace EventEase.Controllers
             return View(booking);
         }
 
-        // GET: Bookings/Delete/5
+
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -147,7 +182,7 @@ namespace EventEase.Controllers
             return View(booking);
         }
 
-        // POST: Bookings/Delete/5
+      
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
