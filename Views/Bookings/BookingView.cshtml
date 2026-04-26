@@ -1,0 +1,63 @@
+@model IEnumerable<EventEase.Models.BookingDetailsViewModel>
+
+@{
+    ViewData["Title"] = "Booking Details View";
+}
+
+<a asp-action="BookingView" class="btn btn-info mb-3">View Booking Details</a>
+
+<div class="card card-custom p-4">
+    <h2 class="page-title">Booking Details View</h2>
+    <hr />
+
+    <form asp-action="BookingView" method="get" class="mb-4">
+        <div class="row g-2">
+            <div class="col-md-8">
+                <input type="text" name="searchString" class="form-control"
+                       placeholder="Search by Booking ID or Event Name..." />
+            </div>
+            <div class="col-md-4">
+                <button type="submit" class="btn btn-primary">Search</button>
+                <a asp-action="BookingView" class="btn btn-secondary">Clear</a>
+            </div>
+        </div>
+    </form>
+
+    <div class="table-responsive">
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>Booking ID</th>
+                    <th>Booking Date</th>
+                    <th>Customer Name</th>
+                    <th>Customer Contact</th>
+                    <th>Event Name</th>
+                    <th>Event Date</th>
+                    <th>Event Description</th>
+                    <th>Venue Name</th>
+                    <th>Location</th>
+                    <th>Capacity</th>
+                    <th>Availability</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.BookingId</td>
+                        <td>@item.BookingDate.ToString("yyyy-MM-dd HH:mm")</td>
+                        <td>@item.CustomerName</td>
+                        <td>@item.CustomerContact</td>
+                        <td>@item.EventName</td>
+                        <td>@item.EventDate.ToString("yyyy-MM-dd HH:mm")</td>
+                        <td>@item.EventDescription</td>
+                        <td>@item.VenueName</td>
+                        <td>@item.Location</td>
+                        <td>@item.Capacity</td>
+                        <td>@(item.Availability ? "Available" : "Unavailable")</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
