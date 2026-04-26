@@ -1,28 +1,42 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using EventEase.Data;
+using EventEase.Models;
+using EventEase.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using EventEase.Data;
-using EventEase.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace EventEase.Controllers
 {
     public class VenuesController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly BlobService _blobService;
 
-        public VenuesController(ApplicationDbContext context)
+
+        public VenuesController(ApplicationDbContext context, BlobService blobService)
         {
             _context = context;
+            _blobService = blobService;
         }
 
         // GET: Venues
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchString)
         {
-            return View(await _context.Venues.ToListAsync());
+            var venues = from v in _context.Venues
+                         select v;
+
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                venues = venues.Where(v =>
+                    (v.VenueName != null && v.VenueName.Contains(searchString)) ||
+                    (v.Location != null && v.Location.Contains(searchString)));
+            }
+
+            return View(await venues.ToListAsync());
         }
 
         // GET: Venues/Details/5
@@ -54,14 +68,24 @@ namespace EventEase.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("VenueId,VenueName,Location,Capacity,Availability,Description,ImageUrl")] Venue venue)
+        public async Task<IActionResult> Create(Venue venue)
         {
+            if (venue.ImageFile != null)
+            {
+                var uploadedUrl = await _blobService.UploadFileAsync(venue.ImageFile);
+                if (!string.IsNullOrEmpty(uploadedUrl))
+                {
+                    venue.ImageUrl = uploadedUrl;
+                }
+            }
+
             if (ModelState.IsValid)
             {
                 _context.Add(venue);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+
             return View(venue);
         }
 
@@ -86,11 +110,32 @@ namespace EventEase.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("VenueId,VenueName,Location,Capacity,Availability,Description,ImageUrl")] Venue venue)
+        public async Task<IActionResult> Edit(int id, Venue venue)
         {
             if (id != venue.VenueId)
             {
                 return NotFound();
+            }
+
+            var existingVenue = await _context.Venues.AsNoTracking()
+                .FirstOrDefaultAsync(v => v.VenueId == id);
+
+            if (existingVenue == null)
+            {
+                return NotFound();
+            }
+
+            if (venue.ImageFile != null)
+            {
+                var uploadedUrl = await _blobService.UploadFileAsync(venue.ImageFile);
+                if (!string.IsNullOrEmpty(uploadedUrl))
+                {
+                    venue.ImageUrl = uploadedUrl;
+                }
+            }
+            else
+            {
+                venue.ImageUrl = existingVenue.ImageUrl;
             }
 
             if (ModelState.IsValid)
@@ -102,7 +147,7 @@ namespace EventEase.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!VenueExists(venue.VenueId))
+                    if (!_context.Venues.Any(e => e.VenueId == venue.VenueId))
                     {
                         return NotFound();
                     }
@@ -113,6 +158,7 @@ namespace EventEase.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+
             return View(venue);
         }
 
@@ -140,12 +186,22 @@ namespace EventEase.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var venue = await _context.Venues.FindAsync(id);
+
+            bool hasBookings = await _context.Bookings
+                .AnyAsync(b => b.VenueId == id);
+
+            if (hasBookings)
+            {
+                TempData["Error"] = "Cannot delete venue. It has active bookings.";
+                return RedirectToAction(nameof(Index));
+            }
+
             if (venue != null)
             {
                 _context.Venues.Remove(venue);
+                await _context.SaveChangesAsync();
             }
 
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
@@ -153,5 +209,7 @@ namespace EventEase.Controllers
         {
             return _context.Venues.Any(e => e.VenueId == id);
         }
+
     }
+
 }
