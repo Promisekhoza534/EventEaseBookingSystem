@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.AspNetCore.Http;
 
 namespace EventEase.Models
 {
@@ -16,6 +18,9 @@ namespace EventEase.Models
         public string? Description { get; set; }
 
         public string? ImageUrl { get; set; }
+
+        [NotMapped]
+        public IFormFile? ImageFile { get; set; }
 
         public int VenueId { get; set; }
 
