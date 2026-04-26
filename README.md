@@ -2,6 +2,8 @@ EventEase – Event Booking System
 
 EventEase is a modern web application built with ASP.NET Core MVC that allows users to manage venues, events, and bookings efficiently. The system is designed to provide a clean interface for organizing events and tracking reservations.
 
+Part1
+
 🚀 Features
 
 🎟️ Manage Events (Create, Edit, Delete, View)
@@ -61,6 +63,47 @@ BookingDate
 🌐 Live Demo
 
 👉 (https://eventease-app-promisekarabo-bahkhmcpamdqfxbe.southafricanorth-01.azurewebsites.net/)
+
+## Part 2 Updates
+
+This version of the EventEase Booking System includes the following enhancements:
+
+### Azure Blob Storage Integration
+
+- Images for venues and events are now uploaded and stored in Azure Blob Storage.
+- 
+- This replaces the previous method of using static image URLs.
+- 
+- Users can create, update, and view images directly from Azure storage.
+
+### Error Handling and Validation
+
+- Prevents double booking of the same venue on the same date.
+- 
+- Prevents deletion of venues and events linked to active bookings.
+- 
+- Displays user-friendly error messages when validation fails.
+- 
+- Ensures the application does not crash on invalid input.
+
+### Enhanced Display (Booking View)
+
+- A new database view (BookingDetailsView) was created using SQL.
+- 
+- This view joins Bookings, Events, and Venues tables.
+- 
+- Provides a consolidated and detailed booking display for users.
+
+### Search Functionality
+
+- Users can search bookings using:
+
+  - Booking ID
+    
+  - Event Name
+    
+- Improves usability and efficiency for booking management.
+
 
 ⚙️ How to Run Locally
 
