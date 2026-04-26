@@ -1,4 +1,4 @@
-﻿@model EventEase.Models.Event
+@model EventEase.Models.Event
 
 @{
     ViewData["Title"] = "Create Event";
@@ -9,7 +9,13 @@
     <hr />
     <div class="row">
         <div class="col-md-8">
-            <form asp-action="Create">
+            <form asp-action="Create" enctype="multipart/form-data">
+                <div class="mb-3">
+                    <label asp-for="ImageFile" class="form-label">Upload Event Image</label>
+                    <input asp-for="ImageFile" type="file" class="form-control" />
+                    <span asp-validation-for="ImageFile" class="text-danger"></span>
+                </div>
+
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
                 <div class="mb-3">
@@ -36,11 +42,7 @@
                     <span asp-validation-for="Description" class="text-danger"></span>
                 </div>
 
-                <div class="mb-3">
-                    <label asp-for="ImageUrl" class="form-label"></label>
-                    <input asp-for="ImageUrl" class="form-control" />
-                    <span asp-validation-for="ImageUrl" class="text-danger"></span>
-                </div>
+        
 
                 <div class="mb-3">
                     <label asp-for="VenueId" class="form-label">Venue</label>
