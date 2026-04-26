@@ -1,25 +1,39 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using EventEase.Data;
 using EventEase.Models;
+using EventEase.Services;
 
 namespace EventEase.Controllers
 {
     public class EventsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly BlobService _blobService;
 
-        public EventsController(ApplicationDbContext context)
+        public EventsController(ApplicationDbContext context, BlobService blobService)
         {
             _context = context;
+            _blobService = blobService;
         }
 
         // GET: Events
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchString)
         {
-            var applicationDbContext = _context.Events.Include(e => e.Venue);
-            return View(await applicationDbContext.ToListAsync());
+            var events = _context.Events
+                .Include(e => e.Venue)
+                .AsQueryable();
+
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                events = events.Where(e =>
+                    (e.EventName != null && e.EventName.Contains(searchString)) ||
+                    (e.Description != null && e.Description.Contains(searchString)) ||
+                    (e.Venue != null && e.Venue.VenueName != null && e.Venue.VenueName.Contains(searchString)));
+            }
+
+            return View(await events.ToListAsync());
         }
 
         // GET: Events/Details/5
@@ -52,17 +66,26 @@ namespace EventEase.Controllers
         // POST: Events/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("EventId,EventName,EventDate,EventType,Description,ImageUrl,VenueId")] Event eventItem)
+        public async Task<IActionResult> Create(Event @event)
         {
+            if (@event.ImageFile != null)
+            {
+                var uploadedUrl = await _blobService.UploadFileAsync(@event.ImageFile);
+                if (!string.IsNullOrEmpty(uploadedUrl))
+                {
+                    @event.ImageUrl = uploadedUrl;
+                }
+            }
+
             if (ModelState.IsValid)
             {
-                _context.Add(eventItem);
+                _context.Add(@event);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
 
-            ViewData["VenueId"] = new SelectList(_context.Venues, "VenueId", "VenueName", eventItem.VenueId);
-            return View(eventItem);
+            ViewData["VenueId"] = new SelectList(_context.Venues, "VenueId", "VenueName", @event.VenueId);
+            return View(@event);
         }
 
         // GET: Events/Edit/5
@@ -86,23 +109,44 @@ namespace EventEase.Controllers
         // POST: Events/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("EventId,EventName,EventDate,EventType,Description,ImageUrl,VenueId")] Event eventItem)
+        public async Task<IActionResult> Edit(int id, Event @event)
         {
-            if (id != eventItem.EventId)
+            if (id != @event.EventId)
             {
                 return NotFound();
+            }
+
+            var existingEvent = await _context.Events.AsNoTracking()
+                .FirstOrDefaultAsync(e => e.EventId == id);
+
+            if (existingEvent == null)
+            {
+                return NotFound();
+            }
+
+            if (@event.ImageFile != null)
+            {
+                var uploadedUrl = await _blobService.UploadFileAsync(@event.ImageFile);
+                if (!string.IsNullOrEmpty(uploadedUrl))
+                {
+                    @event.ImageUrl = uploadedUrl;
+                }
+            }
+            else
+            {
+                @event.ImageUrl = existingEvent.ImageUrl;
             }
 
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _context.Update(eventItem);
+                    _context.Update(@event);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!EventExists(eventItem.EventId))
+                    if (!_context.Events.Any(e => e.EventId == @event.EventId))
                     {
                         return NotFound();
                     }
@@ -115,8 +159,8 @@ namespace EventEase.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            ViewData["VenueId"] = new SelectList(_context.Venues, "VenueId", "VenueName", eventItem.VenueId);
-            return View(eventItem);
+            ViewData["VenueId"] = new SelectList(_context.Venues, "VenueId", "VenueName", @event.VenueId);
+            return View(@event);
         }
 
         // GET: Events/Delete/5
@@ -145,12 +189,22 @@ namespace EventEase.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var eventItem = await _context.Events.FindAsync(id);
+
+            bool hasBookings = await _context.Bookings
+                .AnyAsync(b => b.EventId == id);
+
+            if (hasBookings)
+            {
+                TempData["Error"] = "Cannot delete event. It has active bookings.";
+                return RedirectToAction(nameof(Index));
+            }
+
             if (eventItem != null)
             {
                 _context.Events.Remove(eventItem);
+                await _context.SaveChangesAsync();
             }
 
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
