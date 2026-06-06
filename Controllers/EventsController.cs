@@ -18,11 +18,12 @@ namespace EventEase.Controllers
             _blobService = blobService;
         }
 
-     
+      
         public async Task<IActionResult> Index(string searchString)
         {
             var events = _context.Events
                 .Include(e => e.Venue)
+                .Include(e => e.EventTypeNavigation)
                 .AsQueryable();
 
             if (!string.IsNullOrEmpty(searchString))
@@ -30,13 +31,14 @@ namespace EventEase.Controllers
                 events = events.Where(e =>
                     (e.EventName != null && e.EventName.Contains(searchString)) ||
                     (e.Description != null && e.Description.Contains(searchString)) ||
-                    (e.Venue != null && e.Venue.VenueName != null && e.Venue.VenueName.Contains(searchString)));
+                    (e.Venue != null && e.Venue.VenueName != null && e.Venue.VenueName.Contains(searchString)) ||
+                    (e.EventTypeNavigation != null && e.EventTypeNavigation.EventTypeName.Contains(searchString)));
             }
 
             return View(await events.ToListAsync());
         }
 
-      
+       
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -46,6 +48,7 @@ namespace EventEase.Controllers
 
             var eventItem = await _context.Events
                 .Include(e => e.Venue)
+                .Include(e => e.EventTypeNavigation)
                 .FirstOrDefaultAsync(m => m.EventId == id);
 
             if (eventItem == null)
@@ -56,14 +59,15 @@ namespace EventEase.Controllers
             return View(eventItem);
         }
 
-   
+      
         public IActionResult Create()
         {
             ViewData["VenueId"] = new SelectList(_context.Venues, "VenueId", "VenueName");
+            ViewData["EventTypeId"] = new SelectList(_context.EventTypes, "EventTypeId", "EventTypeName");
             return View();
         }
 
-       
+      
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Event @event)
@@ -77,6 +81,17 @@ namespace EventEase.Controllers
                 }
             }
 
+            if (@event.EventTypeId.HasValue)
+            {
+                var selectedType = await _context.EventTypes
+                    .FirstOrDefaultAsync(et => et.EventTypeId == @event.EventTypeId.Value);
+
+                if (selectedType != null)
+                {
+                    @event.EventType = selectedType.EventTypeName;
+                }
+            }
+
             if (ModelState.IsValid)
             {
                 _context.Add(@event);
@@ -85,10 +100,11 @@ namespace EventEase.Controllers
             }
 
             ViewData["VenueId"] = new SelectList(_context.Venues, "VenueId", "VenueName", @event.VenueId);
+            ViewData["EventTypeId"] = new SelectList(_context.EventTypes, "EventTypeId", "EventTypeName", @event.EventTypeId);
             return View(@event);
         }
 
-   
+     
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -103,10 +119,11 @@ namespace EventEase.Controllers
             }
 
             ViewData["VenueId"] = new SelectList(_context.Venues, "VenueId", "VenueName", eventItem.VenueId);
+            ViewData["EventTypeId"] = new SelectList(_context.EventTypes, "EventTypeId", "EventTypeName", eventItem.EventTypeId);
             return View(eventItem);
         }
 
-   
+      
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, Event @event)
@@ -137,6 +154,21 @@ namespace EventEase.Controllers
                 @event.ImageUrl = existingEvent.ImageUrl;
             }
 
+            if (@event.EventTypeId.HasValue)
+            {
+                var selectedType = await _context.EventTypes
+                    .FirstOrDefaultAsync(et => et.EventTypeId == @event.EventTypeId.Value);
+
+                if (selectedType != null)
+                {
+                    @event.EventType = selectedType.EventTypeName;
+                }
+            }
+            else
+            {
+                @event.EventType = existingEvent.EventType;
+            }
+
             if (ModelState.IsValid)
             {
                 try
@@ -160,10 +192,11 @@ namespace EventEase.Controllers
             }
 
             ViewData["VenueId"] = new SelectList(_context.Venues, "VenueId", "VenueName", @event.VenueId);
+            ViewData["EventTypeId"] = new SelectList(_context.EventTypes, "EventTypeId", "EventTypeName", @event.EventTypeId);
             return View(@event);
         }
 
-       
+      
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -173,6 +206,7 @@ namespace EventEase.Controllers
 
             var eventItem = await _context.Events
                 .Include(e => e.Venue)
+                .Include(e => e.EventTypeNavigation)
                 .FirstOrDefaultAsync(m => m.EventId == id);
 
             if (eventItem == null)
@@ -183,7 +217,7 @@ namespace EventEase.Controllers
             return View(eventItem);
         }
 
-      
+       
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
