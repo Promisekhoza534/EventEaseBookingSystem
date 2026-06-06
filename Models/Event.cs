@@ -26,6 +26,10 @@ namespace EventEase.Models
 
         public Venue? Venue { get; set; }
 
+        public int? EventTypeId { get; set; }
+
+        public EventType? EventTypeNavigation { get; set; }
+
         public ICollection<Booking>? Bookings { get; set; }
     }
 }
