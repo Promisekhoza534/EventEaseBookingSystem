@@ -19,7 +19,12 @@ namespace EventEase.Controllers
             _context = context;
         }
 
-        public async Task<IActionResult> BookingView(string searchString)
+        public async Task<IActionResult> BookingView(
+     string searchString,
+     int? eventTypeId,
+     DateTime? startDate,
+     DateTime? endDate,
+     bool? availability)
         {
             var bookings = _context.BookingDetailsView.AsQueryable();
 
@@ -30,10 +35,41 @@ namespace EventEase.Controllers
                     (b.EventName != null && b.EventName.Contains(searchString)));
             }
 
+            if (eventTypeId.HasValue)
+            {
+                bookings = bookings.Where(b => b.EventTypeId == eventTypeId.Value);
+            }
+
+            if (startDate.HasValue)
+            {
+                bookings = bookings.Where(b => b.EventDate.Date >= startDate.Value.Date);
+            }
+
+            if (endDate.HasValue)
+            {
+                bookings = bookings.Where(b => b.EventDate.Date <= endDate.Value.Date);
+            }
+
+            if (availability.HasValue)
+            {
+                bookings = bookings.Where(b => b.Availability == availability.Value);
+            }
+
+            ViewData["EventTypeId"] = new SelectList(
+                _context.EventTypes,
+                "EventTypeId",
+                "EventTypeName",
+                eventTypeId
+            );
+
+            ViewData["SearchString"] = searchString;
+            ViewData["StartDate"] = startDate?.ToString("yyyy-MM-dd");
+            ViewData["EndDate"] = endDate?.ToString("yyyy-MM-dd");
+            ViewData["Availability"] = availability;
+
             return View(await bookings.ToListAsync());
         }
 
-        
         public async Task<IActionResult> Index(string searchString)
         {
             var bookings = _context.Bookings
@@ -54,7 +90,6 @@ namespace EventEase.Controllers
             return View(await bookings.ToListAsync());
         }
 
-     
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -74,7 +109,6 @@ namespace EventEase.Controllers
             return View(booking);
         }
 
-      
         public IActionResult Create()
         {
             ViewData["EventId"] = new SelectList(_context.Events, "EventId", "EventName");
@@ -82,7 +116,7 @@ namespace EventEase.Controllers
             return View();
         }
 
-       
+      
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Booking booking)
@@ -109,7 +143,7 @@ namespace EventEase.Controllers
             return View(booking);
         }
 
-     
+      
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -127,7 +161,7 @@ namespace EventEase.Controllers
             return View(booking);
         }
 
-       
+      
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("BookingId,BookingDate,CustomerName,CustomerContact,EventId,VenueId")] Booking booking)
@@ -162,7 +196,7 @@ namespace EventEase.Controllers
             return View(booking);
         }
 
-
+       
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -182,7 +216,6 @@ namespace EventEase.Controllers
             return View(booking);
         }
 
-      
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
