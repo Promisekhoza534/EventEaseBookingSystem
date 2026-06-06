@@ -7,9 +7,15 @@
 <div class="card card-custom p-4">
     <h2 class="page-title">Edit Event</h2>
     <hr />
+
     <div class="row">
         <div class="col-md-8">
             <form asp-action="Edit" enctype="multipart/form-data">
+
+                <input type="hidden" asp-for="EventId" />
+                <input type="hidden" asp-for="ImageUrl" />
+
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
                 <div class="mb-3">
                     <label asp-for="ImageFile" class="form-label">Upload Event Image</label>
@@ -17,43 +23,61 @@
                     <span asp-validation-for="ImageFile" class="text-danger"></span>
                 </div>
 
-                <input type="hidden" asp-for="EventId" />
-                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                @if (!string.IsNullOrEmpty(Model.ImageUrl))
+                {
+                    <div class="mb-3">
+                        <img src="@Model.ImageUrl"
+                             alt="Event Image"
+                             class="img-thumbnail"
+                             style="max-width:250px;" />
+                    </div>
+                }
 
                 <div class="mb-3">
-                    <label asp-for="EventName" class="form-label"></label>
+                    <label asp-for="EventName" class="form-label">Event Name</label>
                     <input asp-for="EventName" class="form-control" />
                     <span asp-validation-for="EventName" class="text-danger"></span>
                 </div>
 
                 <div class="mb-3">
-                    <label asp-for="EventDate" class="form-label"></label>
+                    <label asp-for="EventDate" class="form-label">Event Date and Time</label>
                     <input asp-for="EventDate" class="form-control" type="datetime-local" />
                     <span asp-validation-for="EventDate" class="text-danger"></span>
                 </div>
 
                 <div class="mb-3">
-                    <label asp-for="EventType" class="form-label"></label>
-                    <input asp-for="EventType" class="form-control" />
-                    <span asp-validation-for="EventType" class="text-danger"></span>
+                    <label asp-for="EventTypeId" class="form-label">Event Type</label>
+                    <select asp-for="EventTypeId"
+                            class="form-select"
+                            asp-items="ViewBag.EventTypeId">
+                        <option value="">-- Select Event Type --</option>
+                    </select>
+                    <span asp-validation-for="EventTypeId" class="text-danger"></span>
                 </div>
 
                 <div class="mb-3">
-                    <label asp-for="Description" class="form-label"></label>
+                    <label asp-for="Description" class="form-label">Description</label>
                     <input asp-for="Description" class="form-control" />
                     <span asp-validation-for="Description" class="text-danger"></span>
                 </div>
 
-                <input type="hidden" asp-for="ImageUrl" />
-
                 <div class="mb-3">
                     <label asp-for="VenueId" class="form-label">Venue</label>
-                    <select asp-for="VenueId" class="form-select" asp-items="ViewBag.VenueId"></select>
+                    <select asp-for="VenueId"
+                            class="form-select"
+                            asp-items="ViewBag.VenueId">
+                    </select>
                     <span asp-validation-for="VenueId" class="text-danger"></span>
                 </div>
 
-                <button type="submit" class="btn btn-dark btn-custom">Save Changes</button>
-                <a asp-action="Index" class="btn btn-secondary btn-custom">Back to List</a>
+                <button type="submit" class="btn btn-dark btn-custom">
+                    Save Changes
+                </button>
+
+                <a asp-action="Index" class="btn btn-secondary btn-custom">
+                    Back to List
+                </a>
+
             </form>
         </div>
     </div>
